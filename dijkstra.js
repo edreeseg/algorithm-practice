@@ -15,17 +15,8 @@ function dijkstra(input, start, end){
     }
     const processed = [];
     let node = findLowestCodeNode(costs, processed);
-    while (node !== null){
-        let cost = costs.get(node);
-        const neighbors = graph.get(node);
-        for (let [key, value] of neighbors){
-            const newCost = cost + value;
-                if (costs.get(key) > newCost){
-                    costs.set(key, newCost);
-                    parents.set(key, node);
-                }
-        }
-        processed.push(node);
+    while (node !== null){ 
+        updateCostOfNeighbors(costs, graph, parents, node, processed);
         node = findLowestCodeNode(costs, processed);
     }
     const result = [];
@@ -47,6 +38,19 @@ function findLowestCodeNode(costs, processed){
     return lowestCostNode;
 }
 
+function updateCostOfNeighbors(costs, graph, parents, node, processed){
+    const cost = costs.get(node);
+    const neighbors = graph.get(node);
+    for (let [key, value] of neighbors){
+        const newCost = cost + value;
+        if (costs.get(key) > newCost){
+            costs.set(key, newCost);
+            parents.set(key, node);
+        }
+    }
+    processed.push(node);
+}
+
 const example = `A B 1
 B A 1
 A C 3
@@ -57,3 +61,5 @@ C D 3
 D C 3
 D E 1
 E D 1`.split('\n');
+
+console.log(dijkstra(example, 'A', 'E'));
